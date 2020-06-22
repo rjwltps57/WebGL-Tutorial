@@ -1,0 +1,56 @@
+<html>
+
+<head>
+<title>WebGL Tutorial 07 - Transform Coding</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="gl-matrix.js"> </script>
+<script> 
+window['mat4'] = glMatrix.mat4;
+window['vec4'] = glMatrix.vec4;
+window['vec3'] = glMatrix.vec4;
+</script>
+<script type="text/javascript" src="yourCameraVision.js"> </script>
+<script type="text/javascript" src="currentState.js"> </script>
+
+</head>
+
+<body onload="yourCameraVisionMain(); currentStateMain()">
+    <H1> WebGL - Transformation about rotating Cube and Camera </H1>
+    <p>
+        In computer graphics, you can draw an object and look at it with a coordinate system.
+        <br>
+        In this demo, the camera looks at a cube with colored sides.
+        <br>
+        Adjust the position of the cube and camera, and enjoy the fun of computer graphics!
+    </p>
+    <table>
+        <tr>
+            <td>
+                <h3>Current State</h3>
+                <canvas id="currentState" style="border: none;" width="400" height="400"></canvas>
+            </td>
+            <td>
+                <h3>Your Camera Vision</h3>
+                <canvas id="yourCameraVision" style="border: none;" width="400" height="400"></canvas>
+            </td>
+            <td>
+                <h3>Controls</h3>
+            </td>
+        </tr>
+    </table>
+    <button onclick="toggleAnimation()">Toggle Animation</button>
+
+    <p>
+        <H3>How to Use</H3>
+        You can transform the rotating cube and camera.
+        <h4>(1) Cube Controls</h4>
+        <h5>Translate the Cube</h5>
+        <h5>Rotate the Cube</h5>
+        <h4>(2) Camera Controls</h4>
+        <h5>Translate the Camera</h5>
+        <h5>Focus the Camera</h5>
+        <h5 style="color:red">Conditions</h5>
+    </p>
+</body>
+
+</html>
