@@ -1,4 +1,5 @@
 var gl;
+var mainCall = 1;
 
 function testGLError(functionLastCalled) {
     var lastError = gl.getError();
@@ -29,67 +30,90 @@ function initialiseGL(canvas) {
 var shaderProgram;
 
 var vertexData = [
-		// Backface (RED/WHITE) -> z = 0.5
-        -0.5, -0.5, -0.5,  1.0, 0.0, 0.0, 1.0,
-         0.5,  0.5, -0.5,  1.0, 0.0, 0.0, 1.0,
-         0.5, -0.5, -0.5,  1.0, 0.0, 0.0, 1.0,
-        -0.5, -0.5, -0.5,  1.0, 0.0, 0.0, 1.0,
-        -0.5,  0.5, -0.5,  1.0, 0.0, 0.0, 1.0,
-         0.5,  0.5, -0.5,  1.0, 1.0, 1.0, 1.0, 
-		// Front (BLUE/WHITE) -> z = 0.5
-        -0.5, -0.5,  0.5,  0.0, 0.0, 1.0, 1.0,
-         0.5,  0.5,  0.5,  0.0, 0.0, 1.0, 1.0,
-         0.5, -0.5,  0.5,  0.0, 0.0, 1.0, 1.0,
-        -0.5, -0.5,  0.5,  0.0, 0.0, 1.0, 1.0,
-        -0.5,  0.5,  0.5,  0.0, 0.0, 1.0, 1.0,
-         0.5,  0.5,  0.5,  1.0, 1.0, 1.0, 1.0, 
-		// LEFT (GREEN/WHITE) -> z = 0.5
-        -0.5, -0.5, -0.5,  0.0, 1.0, 0.0, 1.0,
-        -0.5,  0.5,  0.5,  0.0, 1.0, 0.0, 1.0,
-        -0.5,  0.5, -0.5,  0.0, 1.0, 0.0, 1.0,
-        -0.5, -0.5, -0.5,  0.0, 1.0, 0.0, 1.0,
-        -0.5, -0.5,  0.5,  0.0, 1.0, 0.0, 1.0,
-        -0.5,  0.5,  0.5,  0.0, 1.0, 1.0, 1.0, 
-		// RIGHT (YELLOE/WHITE) -> z = 0.5
-         0.5, -0.5, -0.5,  1.0, 1.0, 0.0, 1.0,
-         0.5,  0.5,  0.5,  1.0, 1.0, 0.0, 1.0,
-         0.5,  0.5, -0.5,  1.0, 1.0, 0.0, 1.0,
-         0.5, -0.5, -0.5,  1.0, 1.0, 0.0, 1.0,
-         0.5, -0.5,  0.5,  1.0, 1.0, 0.0, 1.0,
-         0.5,  0.5,  0.5,  1.0, 1.0, 1.0, 1.0, 
-		// BOTTON (MAGENTA/WHITE) -> z = 0.5
-        -0.5, -0.5, -0.5,  1.0, 0.0, 1.0, 1.0,
-         0.5, -0.5,  0.5,  1.0, 0.0, 1.0, 1.0,
-         0.5, -0.5, -0.5,  1.0, 0.0, 1.0, 1.0,
-        -0.5, -0.5, -0.5,  1.0, 0.0, 1.0, 1.0,
-        -0.5, -0.5,  0.5,  1.0, 0.0, 1.0, 1.0,
-         0.5, -0.5,  0.5,  1.0, 1.0, 1.0, 1.0, 
-		// TOP (CYAN/WHITE) -> z = 0.5
-        -0.5,  0.5, -0.5,  0.0, 1.0, 1.0, 1.0,
-         0.5,  0.5,  0.5,  0.0, 1.0, 1.0, 1.0,
-         0.5,  0.5, -0.5,  0.0, 1.0, 1.0, 1.0,
-        -0.5,  0.5, -0.5,  0.0, 1.0, 1.0, 1.0,
-        -0.5,  0.5,  0.5,  0.0, 1.0, 1.0, 1.0,
-         0.5,  0.5,  0.5,  1.0, 1.0, 1.0, 1.0 
+    // Backface (RED/WHITE) -> z = 0.5
+    -0.5, -0.5, -0.5,  1.0, 0.0, 0.0, 1.0,  0.0,  0.0,
+     0.5,  0.5, -0.5,  1.0, 0.0, 0.0, 1.0,  1.0,  1.0,
+     0.5, -0.5, -0.5,  1.0, 0.0, 0.0, 1.0,  1.0, -0.0,
+    -0.5, -0.5, -0.5,  1.0, 0.0, 0.0, 1.0, -0.0, -0.0,
+    -0.5,  0.5, -0.5,  1.0, 0.0, 0.0, 1.0, -0.0,  1.0,
+     0.5,  0.5, -0.5,  1.0, 1.0, 1.0, 1.0,  1.0,  1.0,
+    // Front (BLUE/WHITE) -> z = 0.5
+    -0.5, -0.5,  0.5,  0.0, 0.0, 1.0, 1.0, -0.0, -0.0,
+     0.5,  0.5,  0.5,  0.0, 0.0, 1.0, 1.0,  1.0,  1.0,
+     0.5, -0.5,  0.5,  0.0, 0.0, 1.0, 1.0,  1.0, -0.0,
+    -0.5, -0.5,  0.5,  0.0, 0.0, 1.0, 1.0, -0.0, -0.0,
+    -0.5,  0.5,  0.5,  0.0, 0.0, 1.0, 1.0, -0.0,  1.0,
+     0.5,  0.5,  0.5,  1.0, 1.0, 1.0, 1.0,  1.0,  1.0,
+    // LEFT (GREEN/WHITE) -> z = 0.5
+    -0.5, -0.5, -0.5,  0.0, 1.0, 0.0, 1.0, -0.0, -0.0,
+    -0.5,  0.5,  0.5,  0.0, 1.0, 0.0, 1.0,  1.0,  1.0,
+    -0.5,  0.5, -0.5,  0.0, 1.0, 0.0, 1.0,  1.0,  0.0,
+    -0.5, -0.5, -0.5,  0.0, 1.0, 0.0, 1.0, -0.0, -0.0,
+    -0.5, -0.5,  0.5,  0.0, 1.0, 0.0, 1.0, -0.0,  1.0,
+    -0.5,  0.5,  0.5,  0.0, 1.0, 1.0, 1.0,  1.0,  1.0,
+    // RIGHT (YELLOE/WHITE) -> z = 0.5
+     0.5, -0.5, -0.5,  1.0, 1.0, 0.0, 1.0, -0.0, -0.0,
+     0.5,  0.5,  0.5,  1.0, 1.0, 0.0, 1.0,  1.0,  1.0,
+     0.5,  0.5, -0.5,  1.0, 1.0, 0.0, 1.0,  1.0,  0.0,
+     0.5, -0.5, -0.5,  1.0, 1.0, 0.0, 1.0, -0.0, -0.0,
+     0.5, -0.5,  0.5,  1.0, 1.0, 0.0, 1.0, -0.0,  1.0,
+     0.5,  0.5,  0.5,  1.0, 1.0, 1.0, 1.0,  1.0,  1.0,
+    // BOTTON (MAGENTA/WHITE) -> z = 0.5
+    -0.5, -0.5, -0.5,  1.0, 0.0, 1.0, 1.0, -0.0, -0.0,
+     0.5, -0.5,  0.5,  1.0, 0.0, 1.0, 1.0,  1.0,  1.0,
+     0.5, -0.5, -0.5,  1.0, 0.0, 1.0, 1.0,  1.0,  0.0,
+    -0.5, -0.5, -0.5,  1.0, 0.0, 1.0, 1.0, -0.0, -0.0,
+    -0.5, -0.5,  0.5,  1.0, 0.0, 1.0, 1.0, -0.0,  1.0,
+     0.5, -0.5,  0.5,  1.0, 1.0, 1.0, 1.0,  1.0,  1.0,
+    // TOP (CYAN/WHITE) -> z = 0.5
+    -0.5,  0.5, -0.5,  0.0, 1.0, 1.0, 1.0, -0.0, -0.0,
+     0.5,  0.5,  0.5,  0.0, 1.0, 1.0, 1.0,  1.0,  1.0,
+     0.5,  0.5, -0.5,  0.0, 1.0, 1.0, 1.0,  1.0,  0.0,
+    -0.5,  0.5, -0.5,  0.0, 1.0, 1.0, 1.0, -0.0, -0.0,
+    -0.5,  0.5,  0.5,  0.0, 1.0, 1.0, 1.0, -0.0,  1.0,
+     0.5,  0.5,  0.5,  1.0, 1.0, 1.0, 1.0,  1.0,  1.0
 ];
 
-function initialiseBuffer() {
+function initialiseBuffer(textureState) {
 
     gl.vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
 
+	var texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+  
+    if (textureState == false){
+        const texData = new Uint8Array([255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 255, 255, 0, 255]);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, texData);
+        
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    }else{
+        var image = new Image();
+        image.src = base64imgSrc
+        image.addEventListener('load', function() {
+            // Now that the image has loaded make copy it to the texture.
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,gl.UNSIGNED_BYTE, image);
+            gl.generateMipmap(gl.TEXTURE_2D);
+        });
+    }
     return testGLError("initialiseBuffers");
 }
 
 function initialiseShaders() {
 
     var fragmentShaderSource = '\
-			varying highp vec4 color; \
-			void main(void) \
-			{ \
-				gl_FragColor = color;\
-			}';
+            varying highp vec4 color; \
+            varying mediump vec2 texCoord;\
+            uniform sampler2D sampler2d;\
+            void main(void) \
+            { \
+                gl_FragColor = 0.0 * color + 1.0 * texture2D(sampler2d, texCoord); \
+            }';
 
     gl.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(gl.fragShader, fragmentShaderSource);
@@ -104,15 +128,18 @@ function initialiseShaders() {
     var vertexShaderSource = '\
 			attribute highp vec4 myVertex; \
 			attribute highp vec4 myColor; \
+			attribute highp vec2 myUV; \
 			uniform mediump mat4 mMat; \
 			uniform mediump mat4 vMat; \
 			uniform mediump mat4 pMat; \
 			varying  highp vec4 color;\
+			varying mediump vec2 texCoord;\
 			void main(void)  \
 			{ \
 				gl_Position = pMat * vMat * mMat * myVertex; \
 				gl_PointSize = 8.0; \
 				color = myColor; \
+				texCoord = myUV; \
 			}';
 
     gl.vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -132,6 +159,7 @@ function initialiseShaders() {
     // Bind the custom vertex attribute "myVertex" to location 0
     gl.bindAttribLocation(gl.programObject, 0, "myVertex");
     gl.bindAttribLocation(gl.programObject, 1, "myColor");
+    gl.bindAttribLocation(gl.programObject, 2, "myUV");
     // Link the program
     gl.linkProgram(gl.programObject);
     // Check if linking succeeded in a similar way we checked for compilation errors
@@ -146,13 +174,64 @@ function initialiseShaders() {
     return testGLError("initialiseShaders");
 }
 
-flag_animation = 0; 
+flag_animation = 1; 
 function toggleAnimation()
 {
 	flag_animation ^= 1; 
 }
 
-rotSpeeds = 0.0;
+//for rotating tab
+rotXSpeeds = 0.0;
+rotYSpeeds = 0.0;
+rotZSpeeds = 0.0;
+rotXSpeeds_ctr = 0.0;
+rotYSpeeds_ctr = 0.02;
+rotZSpeeds_ctr = 0.0;
+function changeRotXspeeds(num){
+    rotXSpeeds_ctr = num/100.0
+    document.getElementById("doc_rotXspeeds").innerHTML = "The Speeds Of rotX: "+ num/100.0;
+}
+function changeRotYspeeds(num){
+    rotYSpeeds_ctr = num/100.0
+    document.getElementById("doc_rotYspeeds").innerHTML = "The Speeds Of rotY: "+ num/100.0;
+}
+function changeRotZspeeds(num){
+    rotZSpeeds_ctr = num/100.0
+    document.getElementById("doc_rotZspeeds").innerHTML = "The Speeds Of rotZ: "+ num/100.0;
+}
+
+//for translating tab
+locX_ctr = 0;
+locY_ctr = 0;
+locZ_ctr = 0;
+function changeLocX(num){
+    locX_ctr = num
+    document.getElementById("doc_translateX").innerHTML = "The Coordinate Location Of X: "+ num;
+}
+function changeLocY(num){
+    locY_ctr = num
+    document.getElementById("doc_translateY").innerHTML = "The Coordinate Location Of Y: "+ num;
+}
+function changeLocZ(num){
+    locZ_ctr = num
+    document.getElementById("doc_translateZ").innerHTML = "The Coordinate Location Of Z: "+ num;
+}
+
+//for texture mapping
+base64imgSrc = '';
+textureState = false;
+function getBase64imgSrc(imgSrc){
+    base64imgSrc = imgSrc
+}
+function textureMapping(){
+    if (base64imgSrc == ""){
+        alert("choose your img")
+    }else{
+        textureState = true;
+        mainCall++;
+        yourCameraVisionMain()
+    }
+}
 
 function renderScene() {
 
@@ -168,15 +247,17 @@ function renderScene() {
     //y축 회전!!
     var mMat = []; //모델 매트릭스!
     
-    //mat4.rotateX(mMat, mMat, -rotSpeeds) //????????????
-    //x방향으로 0.5만큼 이동!
     mat4.identity(mMat);
-    mat4.translate(mMat, mMat, [0.0, 0.0, 0.0]); 
-    mat4.rotateY(mMat, mMat, rotSpeeds);
+    mat4.translate(mMat, mMat, [locX_ctr, locY_ctr, locZ_ctr]); 
+    mat4.rotateX(mMat, mMat, rotXSpeeds);
+    mat4.rotateY(mMat, mMat, rotYSpeeds);
+    mat4.rotateZ(mMat, mMat, rotZSpeeds);
     
     //mat4.rotateX(mMat, mMat, rotSpeeds)
-	if ( flag_animation ){
-		rotSpeeds += 0.03;
+    if ( flag_animation ){
+        rotXSpeeds += rotXSpeeds_ctr/mainCall;
+        rotYSpeeds += rotYSpeeds_ctr/mainCall;
+        rotZSpeeds += rotZSpeeds_ctr/mainCall;
     }
     
     //lookAt ==> 내가 어디서 보는지를 결정! (원랜 센터에 있었는데 밖으로 이동하자)
@@ -185,32 +266,12 @@ function renderScene() {
     /*
     lookAt 첫번째 벡터 : 카메라 이동
     두번째 벡터 : 센터 벡터(내가 어디를 볼 것인가?)
-    세번째 벡터 : 업벡터? -> y방향???
-        -> 카메라를 기울인다고 생각하면 된다! (카메라 회전)
     */
     
     var pMat = [];  //project(원근) 매트릭스 !
-    /*
-    원근 개념
-        parallel : vanishing point == 0
-            -> affine (orthorganal)
-            -> mat4.ortho(~)
-            -> 얘는 안찌그러짐 (렌즈영향이 없나봐)
-        perspective : vanishing point == 무한
-            -> affine X
-            -> mat4.perspective(~)
-    */
     mat4.identity(pMat); 
-    
     //mat4.ortho(pMat, -2*800.0/600.0, 2*800.0/600.0, -2, 2, 1, 7.0)
-    mat4.perspective(pMat, 3.14/2.0, 400.0/400.0, 0.1, 10.0);
-    /*
-    perspective 첫번째 : pMat (output임)
-    두번째 : 필드 of view? (스케일링인듯 - 크기 달라짐)
-    세번째 : 스크린의 800픽셀/600픽셀
-    네번째 near : 0.5 / 다섯째 far : 5????
-        -> 아마 near와 far의 차이가 depth인가?? : 차이를 넉넉히 하는게 좋겠다
-    */
+    mat4.perspective(pMat, 3.14/2.0, 400.0/400.0, 0.1, 5);
 
     gl.uniformMatrix4fv(mMatLocation, gl.FALSE, mMat );
     gl.uniformMatrix4fv(vMatLocation, gl.FALSE, vMat );
@@ -225,11 +286,11 @@ function renderScene() {
     //bindBuffer : Draw하기 전에 Bind
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.vertexBuffer);
     gl.enableVertexAttribArray(0);
-    //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexData), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 28, 0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, 36 , 0);
     gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 4, gl.FLOAT, gl.FALSE, 28, 12);
-	//gl.vertexAttrib4f(1, 1.0, 0.0, 1.0, 1.0);
+    gl.vertexAttribPointer(1, 3, gl.FLOAT, gl.FALSE, 28, 12);
+    gl.enableVertexAttribArray(2);
+    gl.vertexAttribPointer(2, 2, gl.FLOAT, gl.FALSE, 36, 28);
 
     if (!testGLError("gl.vertexAttribPointer")) {
         return false;
@@ -251,7 +312,7 @@ function yourCameraVisionMain() {
         return;
     }
 
-    if (!initialiseBuffer()) {
+    if (!initialiseBuffer(textureState)) {
         return;
     }
 
@@ -259,8 +320,6 @@ function yourCameraVisionMain() {
         return;
     }
 
-	// renderScene();
-    // Render loop
     requestAnimFrame = (function () {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame ||
 			function (callback) {
@@ -270,7 +329,6 @@ function yourCameraVisionMain() {
 
     (function renderLoop() {
         if (renderScene()) {
-            // Everything was successful, request that we redraw our scene again in the future
             requestAnimFrame(renderLoop);
         }
     })();

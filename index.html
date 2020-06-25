@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>WebGL Tutorial 07 - Transform Coding</title>
+<title>WebGL Tutorial</title>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="gl-matrix.js"> </script>
 <script> 
@@ -10,47 +10,84 @@ window['vec4'] = glMatrix.vec4;
 window['vec3'] = glMatrix.vec4;
 </script>
 <script type="text/javascript" src="yourCameraVision.js"> </script>
-<script type="text/javascript" src="currentState.js"> </script>
+<script type="text/javascript" src="forHtmlVision.js"> </script>
+<link rel="stylesheet" href="final_project.css">
 
 </head>
 
-<body onload="yourCameraVisionMain(); currentStateMain()">
+<body onload=" yourCameraVisionMain(); initView()">
     <H1> WebGL - Transformation about rotating Cube and Camera </H1>
     <p>
-        In computer graphics, you can draw an object and look at it with a coordinate system.
-        <br>
-        In this demo, the camera looks at a cube with colored sides.
-        <br>
-        Adjust the position of the cube and camera, and enjoy the fun of computer graphics!
+        In computer graphics, you can draw an object and transform it with a coordinate system.<br>
+        In this demo, you can transform the object such as rotating and translating.<br>
+        In addition, you can design cube with Texture Mapping.<br>
+        Adjust the state of the cube, and enjoy the fun of computer graphics!
     </p>
     <table>
         <tr>
             <td>
-                <h3>Current State</h3>
-                <canvas id="currentState" style="border: none;" width="400" height="400"></canvas>
-            </td>
-            <td>
-                <h3>Your Camera Vision</h3>
+                <h3>Your Vision</h3>
                 <canvas id="yourCameraVision" style="border: none;" width="400" height="400"></canvas>
             </td>
             <td>
                 <h3>Controls</h3>
+                <div class="tab">
+                    <button class="tablinks" id="rotatingBtn" onclick="openControls(event, 'Rotating')">Rotating</button>
+                    <button class="tablinks" onclick="openControls(event, 'Translating')">Translating</button>
+                    <button class="tablinks" onclick="openControls(event, 'Texture-Mapping')">Texture-Mapping</button>
+                </div>
+
+                <div id="Rotating" class="tabcontent"><br>
+                    <p id="doc_rotXspeeds">The Speeds Of rotX: 0</p>
+                    <div class="slidecontainer">
+                        <input type="range" class="slider" min="-4" max="4" value="0.0" class="slider" id="rotXspeeds" onchange="changeRotXspeeds(this.value)">
+                    </div>
+                    <br>
+                    <p id="doc_rotYspeeds">The Speeds Of rotY: 0.02</p>
+                    <div class="slidecontainer">
+                        <input type="range" class="slider" min="-4" max="4" value="2" class="slider" id="rotYspeeds" onchange="changeRotYspeeds(this.value)">
+                    </div>
+                    <br>
+                    <p id="doc_rotZspeeds">The Speeds Of rotZ: 0</p>
+                    <div class="slidecontainer">
+                        <input type="range" class="slider" min="-4" max="4" value="0.0" class="slider" id="rotZspeeds" onchange="changeRotZspeeds(this.value)">
+                    </div>
+                    <br><br><br><br><br>
+                </div>
+
+                <div id="Translating" class="tabcontent"><br>
+                    <p id="doc_translateX">The Coordinate Location Of X: 0</p>
+                    <div class="slidecontainer">
+                        <input type="range" class="slider" min="-2" max="2" value="0" class="slider" id="translateX" onchange="changeLocX(this.value)">
+                    </div>
+                    <br>
+                    <p id="doc_translateY">The Coordinate Location Of Y: 0</p>
+                    <div class="slidecontainer">
+                        <input type="range" class="slider" min="-2" max="2" value="0" class="slider" id="translateY" onchange="changeLocY(this.value)">
+                    </div>
+                    <br>
+                    <p id="doc_translateZ">The Coordinate Location Of Z: 0</p>
+                    <div class="slidecontainer">
+                        <input type="range" class="slider" min="-2" max="2" value="0" class="slider" id="translateZ" onchange="changeLocZ(this.value)">
+                    </div>
+                    <br><br><br><br><br>
+                </div>
+
+                <div id="Texture-Mapping" class="tabcontent"><br>
+                    <div>
+                        <label for="imageFileOpenInput"></label>
+                        <input type="file" id="upImgFile" onChange="uploadImgPreview();" accept="image/*">
+                        <br><br>
+                    </div>
+                    <div id="imagePreview">
+                        <img id="thumbnailImg" src="">
+                    </div><br>
+                    
+                    <button class="cont_btn2" onclick="textureMapping()"><=Apply</button>
+                </div>
             </td>
         </tr>
     </table>
-    <button onclick="toggleAnimation()">Toggle Animation</button>
-
-    <p>
-        <H3>How to Use</H3>
-        You can transform the rotating cube and camera.
-        <h4>(1) Cube Controls</h4>
-        <h5>Translate the Cube</h5>
-        <h5>Rotate the Cube</h5>
-        <h4>(2) Camera Controls</h4>
-        <h5>Translate the Camera</h5>
-        <h5>Focus the Camera</h5>
-        <h5 style="color:red">Conditions</h5>
-    </p>
 </body>
 
 </html>
